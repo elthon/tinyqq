@@ -18,7 +18,9 @@
     "moment":"*",
     "qs":"*",
     "minimist":"*",
-    "wordwrap":"*"
+    "wordwrap":"*",
+    "mongoose":"*",
+    "mongodb":"*"
   },
   "keywords": [
     "tinyqq",
