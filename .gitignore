@@ -5,3 +5,4 @@ data
 .DS_Store
 test
 scripts/gitlab.js
+nohup.out

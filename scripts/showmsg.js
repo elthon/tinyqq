@@ -3,26 +3,7 @@ var readline = require('readline');
 var _ = require("underscore");
 var moment = require("moment");
 var util = require("util");
-
-// var MongoClient = require('mongodb').MongoClient,
-
-var MongoClient = require('mongodb').MongoClient,
-	Server = require('mongodb').Server,
-	format = require('util').format;
-var mongoClient = new MongoClient(new Server('localhost', 27017));
-
-function save(msg) {
-	mongoClient.open(function(err, mongoClient) {
-		if (mongoClient) {
-			var db1 = mongoClient.db("test");
-
-			var collection = db1.collection('message');
-			collection.insert(msg, function(err, docs) {
-				mongoClient.close();
-			});
-		}
-	});
-}
+var fs = require("fs");
 
 console.log("加载数据存储模块...");
 
@@ -39,7 +20,6 @@ module.exports = function(libqq) {
 		var time = moment(msg.time).format("YYYY-MM-DD HH:mm:ss");
 		var content = util.format("%s 收到 %s 发来的消息：\r\n %s", time, name, msg.text);
 		console.log(content);
-		save(msg);
 	});
 
 	libqq.on('message', function(msg) {
@@ -52,7 +32,6 @@ module.exports = function(libqq) {
 		var time = moment(msg.time).format("YYYY-MM-DD HH:mm:ss");
 		var content = util.format("%s 收到 %s 发来的消息：\r\n %s", time, name, msg.text);
 		console.log(content);
-		save(msg);
 	});
 
 	libqq.on('groupmessage', function(msg) {
@@ -69,6 +48,12 @@ module.exports = function(libqq) {
 		console.log(content);
 
 		libqq.downloadGroupImage(msg);
-		save(msg);
+
+		msg.group = group;
+
+		var uuid = require('node-uuid');
+		fs.writeFile('data/msg/'+ uuid.v1() , JSON.stringify(msg), function (err) {
+  			if (err) throw err;
+		});
 	});
 }
